@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.min.js"></script>
+    <title>Document</title>
+
+</head>
+
+<body>
+  
+    <div class="container">
+        {{!-- {{>header}} --}}
+        <table class="table table-bordered">
+            <tr     class="thead-dark">
+                <th >Name</th>
+                <th>Password</th>
+                <th>Delete</th>
+                <th>Edit</th>
+            </tr>
+            {{#each model}}
+            <tr>
+                <td> {{name}}</td>
+                <td> {{password}} </td>
+                <td><a href="/delete?user={{name}}"> Delete {{name}}</a></td>
+                <td><a href="/update?user={{name}}"> Edit {{name}}</a></td>
+            </tr>
+            {{/each}}
+        </table>
+        {{!-- {{>footer}} --}}
+    </div>
+    
+</body>
+
+</html>

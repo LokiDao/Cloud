@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   
+    <h1>Update</h1>
+    <form action="/doUpdate?user={{name}}" method="post">
+        Name <input type="text" name="txtName" id="" value="{{name}}" readonly>
+        <br>
+        {{error.name}}
+        Password <input type="text" name="txtPassword" id="" value="{{password}}">
+        <br>
+        <input type="submit" value="Register">
+        {{error.password}}
+    </form>
+    <a href="/login"></a>
+</body>
+</html>

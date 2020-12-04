@@ -1,0 +1,4 @@
+function sayhi()
+{
+    alert("Hello");
+}
