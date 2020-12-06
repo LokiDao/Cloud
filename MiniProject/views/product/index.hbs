@@ -1,0 +1,21 @@
+<h1>Danh sach san pham</h1>
+
+<a href="/addProduct" class="btn btn-primary">Them san pham <i class="fa fa-plus"></i></a>
+
+
+<table class="table table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>Tên</th>
+        <th>Giá</th>
+        <th>Mô tả</th>
+    </tr>
+    {{#each product}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{name}}</td>
+        <td>{{price}}</td>
+        <td>{{description}}</td>
+    </tr>
+    {{/each}}
+</table>

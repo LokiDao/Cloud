@@ -69,7 +69,7 @@ app.post('/doRegister',(req,res)=>{
     }else{//Cap nhat file
         
         res.redirect('/');
-    }
+    }   
 
    
 })
