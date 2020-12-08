@@ -1,28 +1,24 @@
-var express = require('express');
-
-var hbs = require('hbs');
-
-var app = express();
-
-var fs = require('fs');
-const filename = 'product.txt';
-
+const express = require('express');
+const hbs = require('hbs');
+const app = express();
+const fs = require('fs');
 const path = require('path');
-
-var multer = require('multer');
+const multer = require('multer');
 const helpers = require('./helpers');
+
+const handlebars = require('handlebars');
+
+const filename = 'product.txt';
 var count = 0;
+// declare bodyparser
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
+
 // view engine
 app.set('view engine','hbs');
 
 // declare static folder
 app.use(express.static(__dirname + '/public'));
-
-// declare bodyparser
-var bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
-
-
 //storage 
 const storage = multer.diskStorage({
     destination : function (req, file,cb){
@@ -39,33 +35,29 @@ hbs.registerPartials(__dirname + '/views/partials')
 app.get('/' , (req,res) => {
 
     let productJson = getProductList();
+    productJson.pop();
 
-    productJson.forEach(element => {
-        console.log(element.id + '-' + element.name + '-' + element.price + '-' + element.description);
-    });
-
-    const template = hbs.compile(fs.readFileSync('views/product/index.hbs','utf-8'));
+    const template = handlebars.compile(fs.readFileSync('views/product/index.hbs','utf-8'));
     const result = template({
         product : productJson
     })
 
-    const content = result;
     res.render('partials/main.hbs', {
-        content : content,
+        content : result,
         products : productJson
         
     })
 })
 
 
-hbs.registerHelper('ProductList', () => {
+handlebars.registerHelper('ProductList', () => {
     let productJson = getProductList();
 
     return productJson;
 })
 
 app.get('/addProduct' , (req,res) => {
-    const content = hbs.compile(fs.readFileSync('views/product/add.hbs','utf-8'));
+    const content = handlebars.compile(fs.readFileSync('views/product/add.hbs','utf-8'));
     res.render('partials/main.hbs', {
         content : content
     })
@@ -114,6 +106,33 @@ app.post('/addProductF',(req,res)=>{
 
 })
 
+app.get('/update', function(req, res) {
+    let id = req.query.id;
+    console.log(id);
+    let productJson = getProductList();
+    productJson.pop();
+    var product = [];
+
+    productJson.forEach(element => {
+        if (element.id == id){
+            product = {
+                'id' : element.id,
+                'name' : element.name,
+                'price' : element.price,
+                'description' : element.description
+            }
+        }
+    });
+
+    const template = handlebars.compile(fs.readFileSync('views/product/update.hbs','utf-8'));
+    const result = template({
+        product : product
+    })
+
+    res.render('partials/main.hbs', {
+        content : result   
+    })
+})
 
 
 
@@ -137,7 +156,7 @@ function getProductList() {
         let product = {
             'id': id,
             'name': nameF,
-            'priceF': priceF,
+            'price': priceF,
             'description': descriptionF,
         };
 

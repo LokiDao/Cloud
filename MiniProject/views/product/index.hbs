@@ -9,13 +9,15 @@
         <th>Tên</th>
         <th>Giá</th>
         <th>Mô tả</th>
+        <th></th>
     </tr>
     {{#each product}}
     <tr>
-        <td>{{id}}</td>
-        <td>{{name}}</td>
-        <td>{{price}}</td>
-        <td>{{description}}</td>
+        <td>{{{id}}}</td>
+        <td>{{{name}}}</td>
+        <td>{{{price}}}</td>
+        <td>{{{description}}}</td>
+        <th><a href="/update?id={{{id}}}"> <i class="fa fa-pen"></i> </a></th>
     </tr>
     {{/each}}
 </table>

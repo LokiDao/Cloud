@@ -39,7 +39,12 @@
         <section class="content">
 <!--            Nội dung hiển thị ở đây-->
             <div class="container-fluid">
-                <h3 class="p-3 mb-2 bg-danger text-white">{{error}}</h3>
+                <h3 class="p-3 mb-2 bg-danger text-white">
+                {{#if error}}
+                    {{error}}
+                {{/if}} 
+                
+                </h3>
               {{{content}}}
             </div>
         </section>
