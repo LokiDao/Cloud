@@ -8,8 +8,9 @@ const helpers = require('./helpers');
 
 const handlebars = require('handlebars');
 
-const filename = 'product.txt';
-var count = 0;
+const filename1 = 'product.txt';
+var count = getProductList().length;
+
 // declare bodyparser
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -20,12 +21,16 @@ app.set('view engine','hbs');
 // declare static folder
 app.use(express.static(__dirname + '/public'));
 //storage 
+
+
+
+
 const storage = multer.diskStorage({
-    destination : function (req, file,cb){
-        cb(null,'uploads/');
+    destination : function (req, file,cb){ // kiem tra xxem file co dc cham nhan hay ko
+        cb(null,'./public/uploads');
     },
     filename : function(req,file, cb){
-        cb(null,file.filename + '-' + Date.now() + path.extname(file.originalname));
+        cb(null, req.body.name + '-' + Date.now() + path.extname(file.originalname));
     }
 })
 
@@ -62,19 +67,20 @@ app.get('/addProduct' , (req,res) => {
         content : content
     })
 })
+var upload = multer({ storage: storage});
 
-app.post('/addProductF',(req,res)=>{
-   
-    //let upload = multer({ storage: storage, fileFilter: helpers.imageFilter }).single('avatar');
+app.post('/addProductF',upload.single("avatar"), (req,res) => {
+    let avatar = req.file.filename;
     let result = '';
     let error = '';
     let name =  req.body.name;
+    // let file = req.file.avatar;
     let price = req.body.price;
-    let description = req.body.description.toString();
+    let description = req.body.description;
     let errorFound = false;
-    let user = count + ':' + name + ':' + price + ':' + description;
-    count++;
+    let user = count + ':' + name + ':' + price + ':' + avatar + ':' +description ;
     
+    console.log(user);
 
     // if(name.length <=3)
     //     error += "Name length >3";
@@ -86,7 +92,7 @@ app.post('/addProductF',(req,res)=>{
     // }
 
     // if (errorFound != true){
-        fs.appendFileSync(filename, user);
+        fs.appendFileSync(filename1, user);
         res.redirect('/');
     //}
 
@@ -136,14 +142,26 @@ app.get('/update', function(req, res) {
 
 
 
+
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT);
 
 console.debug('Server is running ' + PORT);
 
+
+
+
+
+
+
+
+
+
+
 function getProductList() {
-    let file = fs.readFileSync(filename, 'utf-8');
+    let file = fs.readFileSync(filename1, 'utf-8');
     let products = file.split('\n');
     let productJson = [];
 
@@ -151,13 +169,15 @@ function getProductList() {
         let id = element.split(':')[0];
         let nameF = element.split(':')[1];
         let priceF = element.split(':')[2];
-        let descriptionF = element.split(':')[3];
+        let descriptionF = element.split(':')[4];
+        let avatar = element.split(':')[3];
 
         let product = {
             'id': id,
             'name': nameF,
             'price': priceF,
             'description': descriptionF,
+            'avatar' : avatar
         };
 
         productJson.push(product);

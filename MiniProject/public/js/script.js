@@ -40,6 +40,12 @@ $(document).ready(function () {
     filebrowserUploadUrl: 'assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files'
   })
 
+  $('.description').ckeditor({
+    toolbar: 'Full',
+    enterMode : CKEDITOR.ENTER_BR,
+    shiftEnterMode: CKEDITOR.ENTER_P
+  });
+
   $('.image-item img').mouseover(function () {
     var href = $(this).attr('src');
     $('.preview-box .preview-image img').attr('src', href);

@@ -9,6 +9,7 @@
         <th>Tên</th>
         <th>Giá</th>
         <th>Mô tả</th>
+        <th>Ảnh</th>
         <th></th>
     </tr>
     {{#each product}}
@@ -17,7 +18,10 @@
         <td>{{{name}}}</td>
         <td>{{{price}}}</td>
         <td>{{{description}}}</td>
-        <th><a href="/update?id={{{id}}}"> <i class="fa fa-pen"></i> </a></th>
+        <td><img width="100px" src="uploads/{{{avatar}}}" alt=""></td>
+        <td><a href="/update?id={{{id}}}"> <i class="fa fa-pen"></i> </a><a href="/delete?id={{{id}}}"> <i class="fa fa-eye"></i> </a>
+        <a href="/view?id={{{id}}}"> <i class="fa fa-trash"></i> </a></td>
+        
     </tr>
     {{/each}}
 </table>

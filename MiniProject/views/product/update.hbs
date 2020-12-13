@@ -1,4 +1,4 @@
-<form action="/addProductF" enctype="" method="POST">
+<form action="/addProductF" enctype="multipart/form-data" method="POST">
     <div class="form-group">
         <label for="name">Tên sản phẩm</label>
         <input type="text" name="name" id="name" class="form-control" value="{{product.name}}">
@@ -7,10 +7,10 @@
         <label for="price">Giá thành</label>
         <input type="text" name="price" id="price" class="form-control" value="{{product.price}}">
     </div>
-    {{!-- <div class="form-group">
+    <div class="form-group">
         <label for="avatar">Hình ảnh</label>
         <input type="file" name="avatar" id="avatar" class="form-control">
-    </div> --}}
+    </div>
     <div class="form-group">
         <label for="description">Mô tả</label>
         <textarea name="description" id="description" cols="30" rows="10" >{{product.description}}
