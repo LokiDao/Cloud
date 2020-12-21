@@ -7,67 +7,13 @@ const multer = require('multer');
 const helpers = require('./helpers');
 
 const handlebars = require('handlebars');
-const {
-    MongoClient
-} = require('mongodb');
 const uri = "mongodb+srv://quocanh2105:quocanh123@waifuganktem.rwsm6.mongodb.net/miniproject?retryWrites=true&w=majority";
-const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+const mongo = require('mongodb');
 
-async function main() {
-    try {
-        await client.connect();
-
-        console.log("Connected");
-        // await listDatabases(client);
-        // const collection = database.collection('product');
-        // const option = {};
-        // const query = {};
-        // const product =  collection.find(query,option);
-        // await product.forEach(element => {
-        //     console.log(element);
-        // })
-
-    } catch (e) {
-        console.error(e);
-    }
-
-}
-
-function getDb() {
-    const database = client.db('miniproject');
-    return database;
-}
-
-function getList() {
-    var db = getDb();
-    const collection = db.collection('product');
-    const option = {};
-    const query = {};
+async function main(){
     
-    var product = collection.find(query, option);
-    // })
-    
-    return product;
+   
 }
-
-async function listDatabases(client) {
-    databasesList = await client.db().admin().listDatabases();
-
-    console.log("Databases:");
-    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-};
-
-
-
-async function printAllInCollect() {
-
-}
-
-
-main().catch(console.error);
 
 const filename1 = 'product.txt';
 var count = getProductList().length;
@@ -80,7 +26,10 @@ app.use(bodyParser.urlencoded({
 
 // view engine
 app.set('view engine', 'hbs');
-var {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
+var {
+    allowInsecurePrototypeAccess
+} = require('@handlebars/allow-prototype-access');
+const { MongoClient } = require('mongodb');
 // declare static folder
 app.use(express.static(__dirname + '/public'));
 //storage 
@@ -100,45 +49,71 @@ const storage = multer.diskStorage({
 hbs.registerPartials(__dirname + '/views/partials')
 
 
-app.get('/', (req, res) => {
+app.post('/doSearch', async (req,res) => {
+    let client = await MongoClient.connect(uri);
+    let db = client.db('miniproject');
+    let collection = db.collection('product');
 
-    let productJson = getProductList();
-    let productList = getList();
-    productJson.pop();
-    // productList.forEach(element => {
-    //     let item = {
-    //         'id': element.id,
-    //         'name': element.name,
-    //         'description': element.description,
-    //         'avatar': element.avatar
-    //     }
-    //     products.push(new_item);
-    // })
-    let product = new Array();
+    let name = new RegExp(req.body.search);
+    
+    var condition = {'name' : name};
+    var products = await collection.find(condition).toArray();
+    console.log(condition);
+    const template = handlebars.compile(fs.readFileSync('views/product/index.hbs', 'utf-8'));
+    const result = template({
+        product3: products
+    }, {
+        allowProtoMethodsByDefault: false,
+        allowProtoPropertiesByDefault: false
 
-    products = productList.map(function (element) {
-        return {  'id': element.id,
-        'name': element.name,
-        'description': element.description,
-        'avatar': element.avatar}
     })
+
+    res.render('partials/main.hbs', {
+        content: result
+    })
+
+})
+
+app.get('/delete',async  function (req, res) {
+    let client = await MongoClient.connect(uri);
+    let db = client.db('miniproject');
+    let collection = db.collection('product');
+    let id = req.query.id;
+    var o_id = new mongo.ObjectID(id); 
+    var condition = {'_id' : o_id};
+    var is_remove = await collection.removeOne(condition);
     
-    
+    res.redirect('/');
+})
+
+app.get('/', async (req, res) => {
+    let client = await MongoClient.connect(uri);
+    let db = client.db('miniproject');
+    let productJson = getProductList();
+    //let productList = getList();
+    productJson.pop();
+    // const
+    //     MongoClient = require('mongodb').MongoClient;
+   
+    let collection = db.collection('product');
+    const option = {};
+    const query = {};
+
+    var products = await collection.find({}).toArray();
 
     console.log(products.count);
     products.forEach(element => {
         console.log(element);
     })
-    
+
     const template = handlebars.compile(fs.readFileSync('views/product/index.hbs', 'utf-8'));
     const result = template({
-        product3 : products.toArray()
-    },
-    {
-    allowProtoMethodsByDefault: false,
-    allowProtoPropertiesByDefault: false
-    
-  })
+        product3: products
+    }, {
+        allowProtoMethodsByDefault: false,
+        allowProtoPropertiesByDefault: false
+
+    })
 
     res.render('partials/main.hbs', {
         content: result
@@ -162,7 +137,7 @@ var upload = multer({
     storage: storage
 });
 
-app.post('/addProductF', upload.single("avatar"), (req, res) => {
+app.post('/addProductF', upload.single("avatar"), async (req, res) => {
     let avatar = req.file.filename;
     let result = '';
     let error = '';
@@ -175,42 +150,23 @@ app.post('/addProductF', upload.single("avatar"), (req, res) => {
 
     console.log(user);
 
-    let db = getDb();
+    let client = await MongoClient.connect(uri);
+    let db = client.db('miniproject');
 
     const collection = db.collection('product');
 
-    const doc = {'id' : 5, 'name' : name, 'avatar' : avatar , 'description' : description};
+    const doc = {
+        'name': name,
+        'avatar': avatar,
+        'description': description,
+        'price' : price
+    };
 
     const is_insert = collection.insertOne(doc);
 
-
-    // if(name.length <=3)
-    //     error += "Name length >3";
-    // if(error.length <=1000)
-    //     error += "Giá phải lớn hơn 1000"
-
-    // if(error != ''){
-    //     errorFound = true;
-    // }
-
-    // if (errorFound != true){
     fs.appendFileSync(filename1, user);
     res.redirect('/');
-    //}
 
-
-    // if (req.fileValidationError) {
-    //     error = req.fileValidationError;
-    // }
-    // else if (!req.file) {
-    //     error = 'Cần chọn ảnh';
-    // }
-    // else if (err instanceof multer.MulterError) {
-    //     error = err;
-    // }
-    // else if (err) {
-    //     error = err;
-    // }
 
 })
 
@@ -234,12 +190,40 @@ app.get('/update', function (req, res) {
 
     const template = handlebars.compile(fs.readFileSync('views/product/update.hbs', 'utf-8'));
     const result = template({
+        product: productList
+    })
+
+    res.render('partials/main.hbs', {
+        content: result
+    })
+})
+
+
+
+
+
+
+app.get('/view', async (req,res) => {
+    var id = req.query.id;
+    const client = await MongoClient.connect(uri , { useUnifiedTopology: true });
+    const db = client.db('miniproject');
+    console.log(id);
+    const collection = db.collection('product');
+   
+    var o_id = new mongo.ObjectID(id); 
+    console.log(o_id);
+    var condition = {'_id' : o_id};
+    var product = await collection.findOne(condition);
+    
+    const template = handlebars.compile(fs.readFileSync('views/product/view.hbs', 'utf-8'));
+    const result = template({
         product: product
     })
 
     res.render('partials/main.hbs', {
         content: result
     })
+
 })
 
 

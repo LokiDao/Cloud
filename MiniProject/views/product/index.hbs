@@ -2,6 +2,16 @@
 
 <a href="/addProduct" class="btn btn-primary">Them san pham <i class="fa fa-plus"></i></a>
 
+<br><br>
+<form action="/doSearch" method="POST">
+    <div class="form-group">
+        <input type="text" class="form-control" name="search" class="form-control">
+    </div>
+    <div class="form-group">
+        <input type="submit" class="btn-primary" name="submit" value="Tim kiem">
+        <input type="reset">
+    </div>
+</form>
 
 <table class="table table-bordered">
     <tr>
@@ -14,13 +24,13 @@
     </tr>
     {{#each product3}}
     <tr>
-        <td>{{{id}}}</td>
+        <td>{{{_id}}}</td>
         <td>{{{name}}}</td>
-        {{!-- <td>{{{price}}}</td> --}}
+        <td>{{{price}}}</td>
         <td>{{{description}}}</td>
-         <td><img width="100px" src="uploads/{{{avatar}}}" alt=""></td>
-        <td><a href="/update?id={{{id}}}"> <i class="fa fa-pen"></i> </a><a href="/delete?id={{{id}}}"> <i class="fa fa-eye"></i> </a>
-        <a href="/view?id={{{id}}}"> <i class="fa fa-trash"></i> </a></td>
+         <td><img width="150px" src="uploads/{{{avatar}}}" alt=""></td>
+        <td><a href="/update?id={{{_id}}}"> <i class="fa fa-pen"></i> </a><a href="/view?id={{{_id}}}"> <i class="fa fa-eye"></i> </a>
+        <a href="/delete?id={{{_id}}}" onclick="return confirm('Are you sure')"> <i class="fa fa-trash"></i> </a></td>
         
     </tr>
     {{/each}}
