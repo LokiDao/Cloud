@@ -10,7 +10,10 @@ const uri = "mongodb+srv://quocanh2105:quocanh123@waifuganktem.rwsm6.mongodb.net
 const mongo = require('mongodb');
 const {MongoClient} = require('mongodb');
 
-
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 // product_router.set('view engine', 'hbs');
 // product_router.use(express.static(__dirname + '/public'));
 const storage = multer.diskStorage({
@@ -22,10 +25,17 @@ const storage = multer.diskStorage({
     }
 })
 
+handlebars.registerHelper("setChecked", function (value, currentValue) {
+    if ( value == currentValue ) {
+       return "checked";
+    } else {
+       return "";
+    }
+ });
+
 
 product_router.get('/delete',async  function (req, res) {
-
-    let client = await MongoClient.connect(uri);
+    let client = await MongoClient.connect(uri,{ useUnifiedTopology: true });
     let db = client.db('miniproject');
     let collection = db.collection('product');
     let id = req.query.id;
@@ -36,11 +46,11 @@ product_router.get('/delete',async  function (req, res) {
     fs.unlinkSync(__dirname + '/public/uploads/' + avatar);
 
 
-    res.redirect('/');
+    res.redirect('/products/index');
 })
 
 product_router.post('/doSearch', async (req,res) => {
-    let client = await MongoClient.connect(uri);
+    let client = await MongoClient.connect(uri, { useUnifiedTopology: true });
     let db = client.db('miniproject');
     let collection = db.collection('product');
 
@@ -66,7 +76,7 @@ product_router.post('/doSearch', async (req,res) => {
 
 // index
 product_router.get('/index', async (req, res) => {
-    let client = await MongoClient.connect(uri);
+    let client = await MongoClient.connect(uri, { useUnifiedTopology: true });
     let db = client.db('miniproject');
    
     let collection = db.collection('product');
@@ -121,7 +131,7 @@ product_router.get('/view', async (req,res) => {
 //add 
 
 product_router.get('/addProduct', (req, res) => {
-    const content = handlebars.compile(fs.readFileSync('views/product/add.hbs', 'utf-8'));
+    const content = handlebars.compile(fs.readFileSync('views/product/create.hbs', 'utf-8'));
     res.render('partials/main.hbs', {
         content: content
     })
@@ -132,16 +142,10 @@ var upload = multer({
 
 product_router.post('/addProductF', upload.single("avatar"), async (req, res) => {
     let avatar = req.file.filename;
-    let result = '';
-    let error = '';
     let name = req.body.name;
-    // let file = req.file.avatar;
     let price = req.body.price;
     let description = req.body.description;
-    let errorFound = false;
-    //let user = count + ':' + name + ':' + price + ':' + avatar + ':' + description;
-
-
+   
     let client = await MongoClient.connect(uri);
     let db = client.db('miniproject');
 
@@ -155,10 +159,7 @@ product_router.post('/addProductF', upload.single("avatar"), async (req, res) =>
     };
 
     const is_insert = collection.insertOne(doc);
-
-    res.redirect('/');
-
-
+    res.redirect('/products/index');
 })
 
 // end add
@@ -207,9 +208,7 @@ product_router.post('/updateProduct',upload.single("avatar"), async (req,res) =>
     const client = await MongoClient.connect(uri, {useUnifiedTopology : true});
     const db = client.db('miniproject');
     const collection = db.collection('product');
-    console.log(name + '-' +avatar);
     
-
     try {
         var is_update = collection.updateOne({'_id' : id}, {
         $set : {

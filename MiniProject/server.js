@@ -4,8 +4,6 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const helpers = require('./helpers');
-
 const handlebars = require('handlebars');
 const uri = "mongodb+srv://quocanh2105:quocanh123@waifuganktem.rwsm6.mongodb.net/miniproject?retryWrites=true&w=majority";
 const mongo = require('mongodb');
@@ -27,40 +25,24 @@ const { MongoClient } = require('mongodb');
 
 //storage 
 hbs.registerPartials(__dirname + '/views/partials')
-const productRoute = require('./product')
+const productRoute = require('./product');
+const categoryRoute = require('./category');
+const supplierRoute = require('./supplier');
 
 app.use('/products', productRoute);
-
-
+app.use('/categories', categoryRoute);
+app.use('/suppliers', supplierRoute);
 
 app.get('/', async (req, res) => {
-
-
     const template = handlebars.compile(fs.readFileSync('views/home.hbs', 'utf-8'));
     const result = template({}, {
         allowProtoMethodsByDefault: false,
         allowProtoPropertiesByDefault: false
     })
-
     res.render('partials/main.hbs', {
         content: result
     })
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 const PORT = process.env.PORT || 3000;
