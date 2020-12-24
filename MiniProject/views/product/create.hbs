@@ -17,6 +17,21 @@
         </textarea>
     </div>
     <div class="form-group">
-        <input type="submit" class="btn btn-primary" name="submit" id="submit" value="Thêm mới"> 
+        <select name="supplier" id="" class="form-control">
+            {{#each suppliers}}
+            <option value="{{{_id}}}">{{{name}}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div>
+        <select name="category" id="" class="form-control">
+            {{#each categories}}
+            <option value="{{{_id}}}">{{{name}}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <br>
+    <div class="form-group">
+        <input type="submit" class="btn btn-primary" name="submit" id="submit" value="Thêm mới">
     </div>
 </form>

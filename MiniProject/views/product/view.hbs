@@ -1,4 +1,4 @@
-<h1> San pham {{{_id}}} </h1>
+<h1> Product {{{_id}}} </h1>
 
 <table class="table table-bordered">
    <tr>
@@ -6,7 +6,7 @@
        <td>{{{product._id}}}</td>
    </tr>
    <tr>
-       <td>Ten san pham</td>
+       <td>Name</td>
        <td>{{{product.name}}}</td>
    </tr>
    <tr>
@@ -18,11 +18,19 @@
        <td>{{{product.description}}}</td>
    </tr>
    <tr>
+       <td>Category</td>
+       <td>{{{category.name}}}</td>
+   </tr>
+   <tr>
+       <td>Supplier</td>
+       <td>{{{supplier.name}}}</td>
+   </tr>
+   <tr>
        <h2></h2>
-       <td>Hinh anh</td>
+       <td>Avatar</td>
        <td><img width="550px" src="/uploads/{{{product.avatar}}}" alt=""></td>
    </tr>
 </table>
 
-<a href="/" class="btn btn-primary">Tro ve trang chinh</a>
-<a href="/update" class="btn btn-secondary">Cap nhat san pham</a>
+<a href="/" class="btn btn-primary">Back to main menu</a>
+<a href="/products/update?id={{{product._id}}}" class="btn btn-secondary">Update product</a>
