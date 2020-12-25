@@ -4,7 +4,6 @@ const handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const app = express();
 const uri = "mongodb+srv://quocanh2105:quocanh123@waifuganktem.rwsm6.mongodb.net/miniproject?retryWrites=true&w=majority";
 const mongo = require('mongodb');
 const {MongoClient} = require('mongodb');
@@ -105,13 +104,6 @@ category_router.post('/updateCategory', async (req,res) => {
     res.redirect('/categories/index');
 })
 
-
-
-
-
-
-
-
 category_router.get('/add', async (req,res) => {
 
     const template = handlebars.compile(fs.readFileSync('views/categories/create.hbs', 'utf-8'));
@@ -139,13 +131,10 @@ category_router.get('/delete', async (req,res) => {
 
 
 category_router.post('/addCategoryF', async (req,res) => {
-
     let name = req.body.name;
     let description = req.body.description;
     const client = await MongoClient.connect(uri, {useUnifiedTopology : true});
     const db = client.db('miniproject');
-
-    
     const collection = db.collection('categories');
 
     let is_insert = await collection.insertOne({ 'name' : name, 'description' : description});
