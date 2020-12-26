@@ -34,8 +34,20 @@ app.use('/categories', categoryRoute);
 app.use('/suppliers', supplierRoute);
 
 app.get('/', async (req, res) => {
-    const template = handlebars.compile(fs.readFileSync('views/home.hbs', 'utf-8'));
-    const result = template({}, {
+
+    const client = await MongoClient.connect(uri, {useUnifiedTopology :true});
+    const db = client.db('miniproject');
+    const collection = db.collection('product');
+
+    let products = await collection.find({}).toArray();
+
+    
+    const template = handlebars.compile(fs.readFileSync('views/index.hbs', 'utf-8'));
+    console.log(products);
+    const result = template({
+        products : products
+    }, {
+
         allowProtoMethodsByDefault: false,
         allowProtoPropertiesByDefault: false
     })
